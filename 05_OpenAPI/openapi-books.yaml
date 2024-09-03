@@ -1,0 +1,278 @@
+openapi: 3.0.3
+info:
+  title: Library API
+  description: API for managing books and authors in a library.
+  version: 1.0.0
+servers:
+  - url: https://api.example.com/v1
+    description: Main (production) server
+
+paths:
+  /books:
+    get:
+      summary: Get all books
+      description: Retrieve a list of all books in the library.
+      responses:
+        '200':
+          description: A list of books.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Book'
+
+    post:
+      summary: Create a new book
+      description: Add a new book to the library with title, description, publication year, and authors.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookCreate'
+      responses:
+        '201':
+          description: The book was successfully created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Book'
+
+  /books/{bookId}:
+    get:
+      summary: Get a book by ID
+      description: Retrieve detailed information about a specific book by its ID.
+      parameters:
+        - in: path
+          name: bookId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Details of the requested book.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Book'
+        '404':
+          description: Book not found.
+
+    put:
+      summary: Update a book
+      description: Update the details of an existing book by its ID.
+      parameters:
+        - in: path
+          name: bookId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookUpdate'
+      responses:
+        '200':
+          description: The book was successfully updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Book'
+        '404':
+          description: Book not found.
+
+    delete:
+      summary: Delete a book
+      description: Remove a book from the library by its ID.
+      parameters:
+        - in: path
+          name: bookId
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: The book was successfully deleted.
+        '404':
+          description: Book not found.
+
+  /authors:
+    get:
+      summary: Get all authors
+      description: Retrieve a list of all authors in the library.
+      responses:
+        '200':
+          description: A list of authors.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Author'
+
+    post:
+      summary: Create a new author
+      description: Add a new author to the library with name and date of birth.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthorCreate'
+      responses:
+        '201':
+          description: The author was successfully created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Author'
+
+  /authors/{authorId}:
+    get:
+      summary: Get an author by ID
+      description: Retrieve detailed information about a specific author by their ID.
+      parameters:
+        - in: path
+          name: authorId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Details of the requested author.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Author'
+        '404':
+          description: Author not found.
+
+    put:
+      summary: Update an author
+      description: Update the details of an existing author by their ID.
+      parameters:
+        - in: path
+          name: authorId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthorUpdate'
+      responses:
+        '200':
+          description: The author was successfully updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Author'
+        '404':
+          description: Author not found.
+
+components:
+  schemas:
+    Book:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        publicationYear:
+          type: integer
+        authors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Author'
+      required:
+        - id
+        - title
+        - publicationYear
+        - authors
+
+    BookCreate:
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        publicationYear:
+          type: integer
+        authorIds:
+          type: array
+          items:
+            type: string
+      required:
+        - title
+        - publicationYear
+        - authorIds
+
+    BookUpdate:
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        publicationYear:
+          type: integer
+        authorIds:
+          type: array
+          items:
+            type: string
+      required:
+        - title
+        - publicationYear
+        - authorIds
+
+    Author:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        birthdate:
+          type: string
+          format: date
+        books:
+          type: array
+          items:
+            $ref: '#/components/schemas/Book'
+      required:
+        - id
+        - name
+        - birthdate
+
+    AuthorCreate:
+      type: object
+      properties:
+        name:
+          type: string
+        birthdate:
+          type: string
+          format: date
+      required:
+        - name
+        - birthdate
+
+    AuthorUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+        birthdate:
+          type: string
+          format: date
+      required:
+        - name
+        - birthdate
