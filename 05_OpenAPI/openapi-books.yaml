@@ -4,7 +4,7 @@ info:
   description: API for managing books and authors in a library.
   version: 1.0.0
 servers:
-  - url: https://api.example.com/v1
+  - url: http://localhost:8080/
     description: Main (production) server
 
 paths:
